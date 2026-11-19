@@ -116,7 +116,12 @@ function fieldNameFallback(fields: Set<string>) {
     };
   } else if (fields.has('Time') || fields.has('time')) {
     fallback = (field: Field, frame: DataFrame) => {
-      return frame.meta?.typeVersion == null && field.type === FieldType.time;
+      // Only the legacy time field itself should match, not every time-typed field in the frame
+      return (
+        frame.meta?.typeVersion == null &&
+        field.type === FieldType.time &&
+        (field.name === 'Time' || field.name === 'time')
+      );
     };
   }
 
